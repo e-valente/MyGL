@@ -60,8 +60,8 @@ public class MyGL {
         //viewport
         this.xv_min = 0;
         this.yv_min = 0;
-        this.xv_max = 500;  /*width*/
-        this.yv_max = 500;  /*height*/
+        this.xv_max = 200;  /*width*/
+        this.yv_max = 200;  /*height*/
     
         this.npoints = 0;
         this.nlines = 0;
