@@ -19,9 +19,12 @@ public class Render {
 
         MyGL mygl = new MyGL();
         
-        mygl.setClippingWindow(-200, 200, -200, 200, -100, 100);
-        mygl.lookAt(1, 1, 1, 0, 0, 0, 0, -1, 0);
-        mygl.drawPoint(0f, 1f, 1f);
+        mygl.setClippingWindow(-100, 100, -100, 100, -100, 100);
+        mygl.lookAt(0, 0, 1, //coordenada camera
+                    0, 0, 0, //ponto p/ onde a camera aponta
+                    0, 1, 0); //view up
+        
+        mygl.drawPoint(-50f, 0f, 0f);
         mygl.draw(); //multiplica as matrizes e desenha
        
   
