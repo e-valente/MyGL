@@ -255,29 +255,36 @@ public class MyGL {
         Float[] ppp = new Float[4];
         Float[] ppp1 = new Float[4];
         
-        ppp1 = points.get(0);
+       // System.out.println("npoints:" + npoints);
         
-    
-        ppp = Matrices.multiplyMatrix4X4ByVertex(matrix_modelview, ppp1);
+        for(int i=0; i<npoints; i++){
+            
+             ppp1 = points.get(i);
+          
+             System.out.println("ponto que peguei:" + ppp1[0] + ppp1[1]);
+             System.out.println("tamanho da lista: " + points.size());
+             
         
-        Geometry.printVector(ppp);
+             ppp = Matrices.multiplyMatrix4X4ByVertex(matrix_modelview, ppp1);
         
-        points.add(0, ppp);
+             // Geometry.printVector(ppp);
         
-  
-           
-           
-           
+             points.set(i,ppp);
+          
+            
+        }
+        
+     
            
            //desenha
 
  
-           Draw d = new Draw(points);
+           Draw d = new Draw(points, npoints, xv_max, xv_min, yv_max, yv_min);
            
            JFrame frame = new JFrame("Testando MyGL");
            frame.add(d);
            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-           frame.setSize(200, 200); //largura, altura
+           frame.setSize((int)(xv_max - xv_min),(int)(yv_max - yv_min)); //largura, altura
            frame.setLocationRelativeTo(null);
            frame.setVisible(true);
            
