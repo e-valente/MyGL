@@ -16,17 +16,22 @@ import javax.swing.JPanel;
  */
 public class Draw extends JPanel{
     ArrayList<Float[]> points;
-    int n_points;
+    ArrayList<Lines>lines;
+    int n_points, n_lines;
     //coordenadas da viewport para ser feita a correcao
     //das corrdenadas para janela 2d (java).
     Float x_max, x_min, y_max, y_min;
     
     
-    Draw(ArrayList<Float[]> p, int npoints, float xv_max, float xv_min, float yv_max, float yv_min) {
+    Draw(ArrayList<Float[]> p, ArrayList<Lines> l, int npoints, int nlines, float xv_max, float xv_min, float yv_max, float yv_min) {
+       
        points = new ArrayList<Float[]>();
+       lines = new ArrayList<Lines>();
       
        points = p;
+       lines = l;
        n_points = npoints;
+       n_lines = nlines;
        x_max = xv_max;
        x_min = xv_min;
        y_max = yv_max;
@@ -35,9 +40,15 @@ public class Draw extends JPanel{
      @Override
     public void paint(Graphics g){
          Float[] my_point = new Float[4];
+         Lines my_line = new Lines();
+         Float[] my_point2 = new Float[4];
          Float[] my_pointbk = new Float[4];
+         Float[] my_point2bk = new Float[4];
+         
          Graphics2D g2d = (Graphics2D)g;
          
+         
+         //desenha os pontos
           System.out.println("n_points:" + n_points);
          for(int i=0; i< n_points; i++){
                 my_point = points.get(i);
@@ -59,17 +70,74 @@ public class Draw extends JPanel{
                   if(my_point[1] > 0.f) my_point[1] = ( (y_max - y_min)/2 ) - my_point[1];
                   else my_point[1] = ( (y_max - y_min)/2 ) - my_point[1];
         
-                  System.out.println("os valores sao: " + my_point[0].intValue() + " , " + my_point[1].intValue() + " , " + my_point[2].intValue());
+                  //System.out.println("os valores sao: " + my_point[0].intValue() + " , " + my_point[1].intValue() + " , " + my_point[2].intValue());
         
         //g2d.drawLine(150, 50, 150, 50);
                              
-                  g2d.setColor(Color.green);
+                  //g2d.setColor(Color.green);
                   g2d.drawLine(my_point[0].intValue(), my_point[1].intValue(), my_point[0].intValue(), my_point[1].intValue());
         
                   my_point[0] = my_pointbk[0];
                   my_point[1] = my_pointbk[1];
+                  
+                  
+                
+                  
+                  
       
     }
+         
+         //desenha as linhas
+         
+            for(int i=0; i< n_lines; i++){
+                my_line = lines.get(i);
+                
+                my_point[0] = my_line.p1[0];
+                my_point[1] = my_line.p1[1];
+               // my_point[2] = my_line.p1[2];
+                
+                my_point2[0] = my_line.p2[0];
+                my_point2[1] = my_line.p2[1];
+                //my_point2[2] = my_line.p2[2];
+                
+            
+                my_pointbk[0] = my_point[0];
+                my_pointbk[1] = my_point[1];
+                my_point2bk[0] = my_point2[0];
+                my_point2bk[1] = my_point2[1];
+         
+     
+        //correcao para sistema corrdenada mygl -> java2d
+        //em relacao a clipping window
+        //ponto1
+                 if(my_point[0] > 0.f) my_point[0] = ( (x_max - x_min)/2 ) + my_point[0];
+                   else my_point[0] = ( (x_max - x_min)/2 ) + my_point[0];
+        
+                  if(my_point[1] > 0.f) my_point[1] = ( (y_max - y_min)/2 ) - my_point[1];
+                  else my_point[1] = ( (y_max - y_min)/2 ) - my_point[1];
+                  
+                  
+                //ponto2  
+                 if(my_point2[0] > 0.f) my_point2[0] = ( (x_max - x_min)/2 ) + my_point2[0];
+                   else my_point2[0] = ( (x_max - x_min)/2 ) + my_point2[0];
+        
+                  if(my_point2[1] > 0.f) my_point2[1] = ( (y_max - y_min)/2 ) - my_point2[1];
+                  else my_point2[1] = ( (y_max - y_min)/2 ) - my_point2[1];
+                
+                  //g2d.setColor(Color.green);
+                  System.out.println("pontos desenhados pela linha " + my_point[0].intValue() + " , " + my_point[1].intValue() + " , " + my_point2[0].intValue() + " , " + my_point2[1].intValue());
+                   
+                  g2d.drawLine(my_point[0].intValue(), my_point[1].intValue(), my_point2[0].intValue(), my_point2[1].intValue());
+        
+                  my_point[0] = my_pointbk[0];
+                  my_point[1] = my_pointbk[1];
+                  my_point2[0] = my_point2bk[0];
+                  my_point2[1] = my_point2bk[1];
+                  
+      
+      
+    }
+         
 
  }
              

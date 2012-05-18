@@ -41,6 +41,7 @@ public class MyGL {
     
     //our primitives
     ArrayList<Float[]> points;
+    ArrayList<Lines> lines;
     
     //total of primitives
     int npoints;
@@ -66,6 +67,7 @@ public class MyGL {
         this.npoints = 0;
         this.nlines = 0;
         points = new ArrayList<Float[]>();
+        lines = new ArrayList<Lines>();
         
         //initialize our matrices
         matrix_modelview = new Float[16];
@@ -142,6 +144,29 @@ public class MyGL {
         
         
     }
+    
+     public void drawLine(Float p1_x, Float p1_y, Float p1_z, Float p2_x, Float p2_y, Float p2_z) {
+        
+        Lines line_tmp = new Lines();
+        
+        line_tmp.p1[0] = p1_x;
+        line_tmp.p1[1] = p1_y;
+        line_tmp.p1[2] = p1_z;
+        line_tmp.p1[3] = 0f;
+        line_tmp.p2[0] = p2_x;
+        line_tmp.p2[1] = p2_y;
+        line_tmp.p2[2] = p2_z;
+        line_tmp.p2[3] = 0f;
+        
+        line_tmp.color = "black";
+
+        lines.add(line_tmp);
+        nlines++;
+        
+        
+    }
+    
+    
     
     public void listOfPoints(){
         if(npoints == 0)System.out.println("It has no points");
@@ -261,8 +286,8 @@ public class MyGL {
             
              ppp1 = points.get(i);
           
-             System.out.println("ponto que peguei:" + ppp1[0] + ppp1[1]);
-             System.out.println("tamanho da lista: " + points.size());
+            // System.out.println("ponto que peguei:" + ppp1[0] + ppp1[1]);
+             //System.out.println("tamanho da lista: " + points.size());
              
         
              ppp = Matrices.multiplyMatrix4X4ByVertex(matrix_modelview, ppp1);
@@ -274,12 +299,37 @@ public class MyGL {
             
         }
         
+        Lines line_tmp = new Lines();
+        
+        for (int i=0; i<nlines; i++) {
+            
+            line_tmp = lines.get(i);
+            
+            ppp = line_tmp.p1;
+            ppp1 = line_tmp.p2;
+            
+            
+            
+            ppp = Matrices.multiplyMatrix4X4ByVertex(matrix_modelview, ppp);
+            ppp1 = Matrices.multiplyMatrix4X4ByVertex(matrix_modelview, ppp1);
+            
+            System.out.println("ponto que peguei linha antes do java2d:" + ppp[0] + ppp[1]);
+            System.out.println("ponto que peguei da linha antes do java2d:" + ppp1[0] + ppp1[1]);
+            
+            
+            line_tmp.p1 = ppp;
+            line_tmp.p2 = ppp1;
+            
+            lines.set(i, line_tmp);
+  
+        }
+        
      
            
            //desenha
 
  
-           Draw d = new Draw(points, npoints, xv_max, xv_min, yv_max, yv_min);
+           Draw d = new Draw(points, lines, npoints, nlines, xv_max, xv_min, yv_max, yv_min);
            
            JFrame frame = new JFrame("Testando MyGL");
            frame.add(d);
