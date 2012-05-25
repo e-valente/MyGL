@@ -575,9 +575,6 @@ public class MyGL {
             }
 
 
-
-
-
             if (remove) {
                 points.remove(i);
                 npoints--;
@@ -600,70 +597,92 @@ public class MyGL {
         Lines _myline = new Lines();
         Float[] my_point1 = new Float[4];
         Float[] my_point2 = new Float[4];
-        boolean point1_out = false;
-        boolean point2_out = false;
-        boolean remove_line = false;
+        Float[] test_point1 = new Float[4];
+        Float[] test_point2 = new Float[4];
+        boolean point1_ok = false;
+        boolean point2_ok = false;
+        Float delta = 0.00001f;
         int excluidos = 0;
-
-
-        Float x_min = -1f;
-        Float x_max = 1f;
-        Float y_min = -1f;
-        Float y_max = 1f;
-        Float z_min = -1f;
-        Float z_max = 1f;
-
+        
+        Float u = 0f;
 
         //verifica se os 2 pontos estão fora e os exclui
         for (int i = 0; i < nlines; i++) {
             _myline = lines.get(i);
             my_point1 = _myline.p1;
             my_point2 = _myline.p2;
-
-            System.out.println("Ponto1 da linha  antes de ser processado: " + my_point1[0] + " " + my_point1[1] + " " + my_point1[2] + "\n");
-            System.out.println("Ponto2 da linha  antes de ser processado: " + my_point2[0] + " " + my_point2[1] + " " + my_point2[2] + "\n\n");
-
-            if ((my_point1[0] < x_min) && (my_point2[0] < x_min)) {
-                remove_line = true;
+       
+            test_point1 = my_point1;
+            test_point2 = my_point2;
+            test_point1[3] = 0f;
+            test_point2[3] = 0f;
+            
+            while(u < 1f) {
+                //percorre p1 até p2
+                if(!point1_ok) {
+                    
+                     
+                     if(verifyPointIfInsideCube(test_point1)) {
+                         my_point1 = test_point1;
+                         point1_ok = true;
+                     }
+                  
+                    test_point1[0] = (1 - u) * my_point1[0] + u * my_point2[0];
+                    test_point1[1] = (1 - u) * my_point1[1] + u * my_point2[1];
+                    test_point1[2] = (1 - u) * my_point1[2] + u * my_point2[2];
+                    
+                   
+                }
+                
+                if(!point2_ok) {
+                    
+                     if(verifyPointIfInsideCube(test_point2)) {
+                        my_point2 = test_point2;
+                        point2_ok = true;
+                    }
+                //percorre p2 até p1
+                    test_point2[0] = (1 - u) * my_point2[0] + u * my_point1[0];
+                    test_point2[1] = (1 - u) * my_point2[1] + u * my_point1[1];
+                    test_point2[2] = (1 - u) * my_point2[2] + u * my_point1[2];
+            
+                }
+                 u += delta;
             }
-
-            if ((my_point1[1] < y_min) && (my_point2[1] < y_min)) {
-                remove_line = true;
-            }
-
-            if ((my_point1[2] < z_min) && (my_point2[2] < z_min)) {
-                remove_line = true;
-            }
-
-
-            if ((my_point1[0] > y_max) && (my_point2[0] > x_max)) {
-                remove_line = true;
-            }
-
-            if ((my_point1[1] > y_max) && (my_point2[1] > y_max)) {
-                remove_line = true;
-            }
-
-            if ((my_point1[2] > z_max) && (my_point2[2] > z_max)) {
-                remove_line = true;
-            }
-
-
-
-            if (remove_line) {
-                System.out.println("removendo linha\n\n");
+            
+            if((!point1_ok) && (!point2_ok)) {
                 lines.remove(i);
                 nlines--;
                 i--;
-                excluidos++;
+                excluidos ++;
+                  
+            } else {
+                
+                _myline.p1 = my_point1;
+                _myline.p2 = my_point2;
+                lines.set(i, _myline);
+                System.out.println("Pontos da linha recortados: \nPonto1: " + my_point1[0] + " " + my_point1[1] + " " + my_point1[2]);
+                System.out.println("Ponto2: " + my_point2[0] + " " + my_point2[1] + " " + my_point2[2] + "\n\n");
+          
             }
+            
+            u = 0f;
+            point1_ok = false;
+            point2_ok = false;
+            
 
-
-            remove_line = false;
-
+           
+    
         }
 
-        System.out.println("Total linhas excluidas: " + excluidos);
+        System.out.println("Total linhas excluidas: " + excluidos + "\n\n");
 
+    }
+    
+    private boolean verifyPointIfInsideCube(Float[] p){
+        
+        if((p[0] < -1.f) ||(p[1] < -1f) || (p[2] < -1f)) return false;
+        if((p[0] > 1.f) ||(p[1] > 1f) || (p[2] > 1f)) return false;
+    
+        return true;
     }
 }

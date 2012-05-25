@@ -28,10 +28,11 @@ public class Render {
        // mygl.drawPoint(0f, 0f, 0f);
        // mygl.drawPoint(410f, 40f, 0f);
        // mygl.drawPoint(410f, 40f, 0f);
-         mygl.drawPoint(-399f, 100f, 410f);
+        // mygl.drawPoint(-399f, 100f, 410f);
         //mygl.drawPoint(500f, -410f, 0f);
-         mygl.drawLine(-401f, 0f, 0f, -402f, 0f, 0f);
-       // mygl.drawLine(-200f, 0f, 0f, 200f, 0f, 0f);
+        mygl.drawLine(-430f, 0f, 0f, -420f, 0f, 0f);
+        mygl.drawLine(200f, -410f, 0f, 210f, -420f, 0f);
+        mygl.drawLine(-500f, 0f, 0f, 0f, 500f, 0f);
         mygl.flush(); //multiplica as matrizes e desenha
    
     }
