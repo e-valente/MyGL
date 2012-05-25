@@ -51,6 +51,7 @@ public class Draw extends JPanel {
 
             _my_point = points.get(i);
             my_point = _my_point.p;
+            System.out.println("pontos desenhados pela linha " + my_point[0].intValue() + " , " + my_point[1].intValue() + " , " + my_point[2].intValue());
             g2d.drawLine(my_point[0].intValue(), my_point[1].intValue(), my_point[0].intValue(), my_point[1].intValue());
 
         }

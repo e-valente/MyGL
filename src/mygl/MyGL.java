@@ -250,18 +250,18 @@ public class MyGL {
         mat_ortho_norm[0] = 2 / ((this.xw_max - this.xw_min));
         mat_ortho_norm[1] = 0f;
         mat_ortho_norm[2] = 0f;
-        mat_ortho_norm[3] = 2 / ((-this.xw_max + this.xw_min) / (this.xw_max - this.xw_min));
+        mat_ortho_norm[3] = -((-this.xw_max + this.xw_min) / (this.xw_max - this.xw_min));
 
         //linha2
         mat_ortho_norm[4] = 0f;
         mat_ortho_norm[5] = 2 / ((this.yw_max - this.yw_min));
         mat_ortho_norm[6] = 0f;
-        mat_ortho_norm[7] = 2 / ((-this.yw_max + this.yw_min) / (this.yw_max - this.yw_min));
+        mat_ortho_norm[7] = -((this.yw_max + this.yw_min) / (this.yw_max - this.yw_min));
 
         //linha3
         mat_ortho_norm[8] = 0f;
         mat_ortho_norm[9] = 0f;
-        mat_ortho_norm[10] = 2 / ((this.z_near - this.z_far));
+        mat_ortho_norm[10] = -2f / ((this.z_near - this.z_far));
         mat_ortho_norm[11] = (this.z_near + this.z_far) / (this.z_near - this.z_far);
 
         //linha4
@@ -273,38 +273,12 @@ public class MyGL {
 
         matrix_modelview = Matrices.multiplyMatrix4X4(mat_ortho_norm, matrix_wc_vc);
 
-        //obtendo mat_norm_3dscreen
-        //linha1
-        mat_norm_3dscreen[0] = (this.xv_max - this.xv_min) / 2;
-        mat_norm_3dscreen[1] = 0f;
-        mat_norm_3dscreen[2] = 0f;
-        mat_norm_3dscreen[3] = (this.xv_max + this.xv_min) / 2;
 
-        //linha2
-        mat_norm_3dscreen[4] = 0f;
-        mat_norm_3dscreen[5] = (this.yv_max - this.yv_min) / 2;
-        mat_norm_3dscreen[6] = 0f;
-        mat_norm_3dscreen[7] = (this.yv_max + this.yv_min) / 2;
-
-        //linha3
-        mat_norm_3dscreen[8] = 0f;
-        mat_norm_3dscreen[9] = 0f;
-        mat_norm_3dscreen[10] = 1f / 2;
-        mat_norm_3dscreen[11] = 1f / 2;
-
-        //linha4
-        mat_norm_3dscreen[12] = 0f;
-        mat_norm_3dscreen[13] = 0f;
-        mat_norm_3dscreen[14] = 0f;
-        mat_norm_3dscreen[15] = 1f;
-
-
-        matrix_modelview = Matrices.multiplyMatrix4X4(matrix_modelview, mat_norm_3dscreen);
-
-
-
-        Matrices.printMatrix(matrix_modelview);
-
+        /**
+         * ***************RECORTE******************************************
+         */
+        //neste ponto teremos a matriz que normaliza as coordenadas num cubo 
+        //de lado 2 (-1 até 1).
         Float[] ppp = new Float[4];
         Float[] ppp1 = new Float[4];
         Points tmp_point = new Points();
@@ -321,13 +295,13 @@ public class MyGL {
             ppp1[2] = tmp_point.p[2];
             ppp1[3] = tmp_point.p[3];
 
-            System.out.println("ponto que peguei antes do java 2d:" + ppp1[0] + " " + ppp1[1]);
+            //  System.out.println("ponto que peguei antes do java 2d:" + ppp1[0] + " " + ppp1[1] + " " + ppp1[2]);
             //System.out.println("tamanho da lista: " + points.size());
 
 
             ppp = Matrices.multiplyMatrix4X4ByVertex(matrix_modelview, ppp1);
 
-            System.out.println("ponto que peguei depois do java2d:" + ppp[0] + " " + ppp[1]);
+            //System.out.println("ponto que peguei depois do java2d:" + ppp[0] + " " + ppp[1] + " " + ppp[2]);
 
 
             // Geometry.printVector(ppp);
@@ -340,8 +314,6 @@ public class MyGL {
 
 
         }
-
-
 
         Lines line_tmp = new Lines();
 
@@ -368,9 +340,99 @@ public class MyGL {
 
         }
 
+        clippingPointsNormalized();
+        clippingLinesNormalized();
+
+
+
+
+
+        /**
+         * ** FIM RECORTE ****************************************************
+         */
+        //obtendo mat_norm_3dscreen
+        //linha1
+        mat_norm_3dscreen[0] = (this.xv_max - this.xv_min) / 2;
+        mat_norm_3dscreen[1] = 0f;
+        mat_norm_3dscreen[2] = 0f;
+        mat_norm_3dscreen[3] = (this.xv_max + this.xv_min) / 2;
+
+        //linha2
+        mat_norm_3dscreen[4] = 0f;
+        mat_norm_3dscreen[5] = (this.yv_max - this.yv_min) / 2;
+        mat_norm_3dscreen[6] = 0f;
+        mat_norm_3dscreen[7] = (this.yv_max + this.yv_min) / 2;
+
+        //linha3
+        mat_norm_3dscreen[8] = 0f;
+        mat_norm_3dscreen[9] = 0f;
+        mat_norm_3dscreen[10] = 1f / 2;
+        mat_norm_3dscreen[11] = 1f / 2;
+
+        //linha4
+        mat_norm_3dscreen[12] = 0f;
+        mat_norm_3dscreen[13] = 0f;
+        mat_norm_3dscreen[14] = 0f;
+        mat_norm_3dscreen[15] = 1f;
+
+
+        //matrix_modelview = Matrices.multiplyMatrix4X4(matrix_modelview, mat_norm_3dscreen);
+        matrix_modelview = Matrices.multiplyMatrix4X4(mat_norm_3dscreen, matrix_modelview);
+
+
+
+
+        Matrices.printMatrix(matrix_modelview);
+
+
         //Transforma pontos e linhas para o sistema de coordenadas do java2d
+        //clippingPoints();
+        for (int i = 0; i < npoints; i++) {
+
+            //ppp1 = points.get(i);
+            tmp_point = points.get(i);
+
+            ppp1 = tmp_point.p;
+
+            //os pontos ja estao normalizados no cubo, portanto basta colocar
+            //nas coordenadas de tela
+            ppp = Matrices.multiplyMatrix4X4ByVertex(mat_norm_3dscreen, ppp1);
+
+
+            // Geometry.printVector(ppp);
+            tmp_point.p = ppp;
+
+
+            points.set(i, tmp_point);
+
+
+        }
+
+
+        for (int i = 0; i < nlines; i++) {
+
+            line_tmp = lines.get(i);
+
+            ppp = line_tmp.p1;
+            ppp1 = line_tmp.p2;
+
+            //os pontos ja estao normalizados no cubo, portanto basta colocar
+            //nas coordenadas de tela
+            ppp = Matrices.multiplyMatrix4X4ByVertex(mat_norm_3dscreen, ppp);
+            ppp1 = Matrices.multiplyMatrix4X4ByVertex(mat_norm_3dscreen, ppp1);
+
+            line_tmp.p1 = ppp;
+            line_tmp.p2 = ppp1;
+
+            lines.set(i, line_tmp);
+
+        }
+
+
+
         fixPointsToJava2DCoordinates();
         fixLinesToJava2DCoordinates();
+
 
 
 
@@ -399,6 +461,8 @@ public class MyGL {
             my_point[1] = _my_point.p[1];
             my_point[2] = _my_point.p[2];
             my_point[3] = _my_point.p[3];
+
+            //System.out.println("mmmPonto antes de ser processado para java2d: " + my_point[0] + " " + my_point[1] + " " + my_point[2]);
 
 
             if (my_point[0] > 0.f) {
@@ -466,17 +530,140 @@ public class MyGL {
 
     }
 
-    private void clippingPoints() {
+    private void clippingPointsNormalized() {
+        boolean remove = false;
         Points _my_point;
         Float[] my_point;
-        Float x_min = -(this.xv_max - this.xv_min) / 2;
-        Float x_max = (this.xv_max - this.xv_min) / 2;
-        Float y_min = -(this.yv_max - this.yv_min) / 2;
-        Float y_max = (this.yv_max - this.yv_min) / 2;
+        Float x_min = -1f;
+        Float x_max = 1f;
+        Float y_min = -1f;
+        Float y_max = 1f;
+        Float z_min = -1f;
+        Float z_max = 1f;
 
-        //terminar!
+
+        int excluidos = 0;
+
+        for (int i = 0; i < npoints; i++) {
+            _my_point = points.get(i);
+            my_point = _my_point.p;
+
+            //System.out.println("Ponto processado: " + my_point[0] + " " + my_point[1] + " " + my_point[2]);
+
+            if ((my_point[0] < x_min) || (my_point[0] > x_max)) {
+
+                remove = true;
+
+            }
+
+            if (!remove) {
+                if ((my_point[1] < y_min) || (my_point[1] > y_max)) {
+
+                    remove = true;
+                }
 
 
+            }
+
+            if (!remove) {
+                if ((my_point[2] < z_min) || (my_point[2] > z_max)) {
+
+                    remove = true;
+                }
+
+
+            }
+
+
+
+
+
+            if (remove) {
+                points.remove(i);
+                npoints--;
+                i--;
+                remove = false;
+                excluidos++;
+
+            }
+
+
+
+        }
+
+        System.out.println("Pontos excluidos:" + excluidos + "\n\n");
+
+
+    }
+
+    private void clippingLinesNormalized() {
+        Lines _myline = new Lines();
+        Float[] my_point1 = new Float[4];
+        Float[] my_point2 = new Float[4];
+        boolean point1_out = false;
+        boolean point2_out = false;
+        boolean remove_line = false;
+        int excluidos = 0;
+
+
+        Float x_min = -1f;
+        Float x_max = 1f;
+        Float y_min = -1f;
+        Float y_max = 1f;
+        Float z_min = -1f;
+        Float z_max = 1f;
+
+
+        //verifica se os 2 pontos estão fora e os exclui
+        for (int i = 0; i < nlines; i++) {
+            _myline = lines.get(i);
+            my_point1 = _myline.p1;
+            my_point2 = _myline.p2;
+
+            System.out.println("Ponto1 da linha  antes de ser processado: " + my_point1[0] + " " + my_point1[1] + " " + my_point1[2] + "\n");
+            System.out.println("Ponto2 da linha  antes de ser processado: " + my_point2[0] + " " + my_point2[1] + " " + my_point2[2] + "\n\n");
+
+            if ((my_point1[0] < x_min) && (my_point2[0] < x_min)) {
+                remove_line = true;
+            }
+
+            if ((my_point1[1] < y_min) && (my_point2[1] < y_min)) {
+                remove_line = true;
+            }
+
+            if ((my_point1[2] < z_min) && (my_point2[2] < z_min)) {
+                remove_line = true;
+            }
+
+
+            if ((my_point1[0] > y_max) && (my_point2[0] > x_max)) {
+                remove_line = true;
+            }
+
+            if ((my_point1[1] > y_max) && (my_point2[1] > y_max)) {
+                remove_line = true;
+            }
+
+            if ((my_point1[2] > z_max) && (my_point2[2] > z_max)) {
+                remove_line = true;
+            }
+
+
+
+            if (remove_line) {
+                System.out.println("removendo linha\n\n");
+                lines.remove(i);
+                nlines--;
+                i--;
+                excluidos++;
+            }
+
+
+            remove_line = false;
+
+        }
+
+        System.out.println("Total linhas excluidas: " + excluidos);
 
     }
 }
