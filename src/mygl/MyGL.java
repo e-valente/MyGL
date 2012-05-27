@@ -4,6 +4,7 @@
  */
 package mygl;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 
@@ -39,6 +40,8 @@ public class MyGL {
     //total of primitives
     int npoints;
     int nlines;
+    //cor de fundo
+    Float[] background_color;
 
     MyGL() {
 
@@ -88,6 +91,9 @@ public class MyGL {
         p_ref[0] = 0f;
         p_ref[1] = 0f;
         p_ref[2] = 0f;
+        
+        //cor branca é padrao
+        background_color = new Float[] {1f, 1f, 1f}; 
 
 
     }
@@ -141,6 +147,26 @@ public class MyGL {
 
 
     }
+    
+    
+    public void drawPointRGB(Float p0, Float p1, Float p2, float c1, float c2, float c3) {
+        Points tmp_point = new Points();
+
+        tmp_point.p[0] = p0;
+        tmp_point.p[1] = p1;
+        tmp_point.p[2] = p2;
+        tmp_point.p[3] = 0f;
+        
+        tmp_point.color[0] = c1;
+        tmp_point.color[1] = c2;
+        tmp_point.color[2] = c3;
+        
+
+        points.add(tmp_point);
+        npoints++;
+
+
+    }
 
     public void drawLine(Float p1_x, Float p1_y, Float p1_z, Float p2_x, Float p2_y, Float p2_z) {
 
@@ -155,7 +181,31 @@ public class MyGL {
         line_tmp.p2[2] = p2_z;
         line_tmp.p2[3] = 0f;
 
-        line_tmp.color = "black";
+
+        lines.add(line_tmp);
+        nlines++;
+
+
+    }
+    
+    
+    public void drawLineRGB(Float p1_x, Float p1_y, Float p1_z, Float p2_x, Float p2_y, Float p2_z, float c1, float c2, float c3) {
+
+        Lines line_tmp = new Lines();
+
+        line_tmp.p1[0] = p1_x;
+        line_tmp.p1[1] = p1_y;
+        line_tmp.p1[2] = p1_z;
+        line_tmp.p1[3] = 0f;
+        line_tmp.p2[0] = p2_x;
+        line_tmp.p2[1] = p2_y;
+        line_tmp.p2[2] = p2_z;
+        line_tmp.p2[3] = 0f;
+        
+        line_tmp.color[0] = c1;
+        line_tmp.color[1] = c2;
+        line_tmp.color[2] = c3;
+
 
         lines.add(line_tmp);
         nlines++;
@@ -295,13 +345,13 @@ public class MyGL {
             ppp1[2] = tmp_point.p[2];
             ppp1[3] = tmp_point.p[3];
 
-            //  System.out.println("ponto que peguei antes do java 2d:" + ppp1[0] + " " + ppp1[1] + " " + ppp1[2]);
+           // System.out.println("ponto que peguei antes do java 2d:" + ppp1[0] + " " + ppp1[1] + " " + ppp1[2]);
             //System.out.println("tamanho da lista: " + points.size());
 
 
             ppp = Matrices.multiplyMatrix4X4ByVertex(matrix_modelview, ppp1);
 
-            //System.out.println("ponto que peguei depois do java2d:" + ppp[0] + " " + ppp[1] + " " + ppp[2]);
+           // System.out.println("ponto que peguei depois do java2d:" + ppp[0] + " " + ppp[1] + " " + ppp[2]);
 
 
             // Geometry.printVector(ppp);
@@ -401,6 +451,7 @@ public class MyGL {
 
             // Geometry.printVector(ppp);
             tmp_point.p = ppp;
+           // System.out.println("ponto que peguei depois de transformar para coordenadas de tela:" + ppp[0] + " " + ppp[1] + " " + ppp[2]);
 
 
             points.set(i, tmp_point);
@@ -430,25 +481,47 @@ public class MyGL {
 
 
 
+
         fixPointsToJava2DCoordinates();
         fixLinesToJava2DCoordinates();
-
-
-
-
+  
 
         Draw d = new Draw(points, lines, npoints, nlines, xv_max, xv_min, yv_max, yv_min);
 
         JFrame frame = new JFrame("Testando MyGL");
+        frame.setSize((int) (xv_max - xv_min), (int) (yv_max - yv_min)); //largura, altura
         frame.add(d);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize((int) (xv_max - xv_min), (int) (yv_max - yv_min)); //largura, altura
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+        
+        Color c;
+        c = new Color(background_color[0], background_color[1],background_color[2]);
+      
+       // System.out.println("valor de c: \n" + c);
+       
+        frame.setBackground(c);
+        
 
-        //  d.paint(g);
+        //d.paint(g);
 
     }
+    
+    
+    void setBackgroundColor(Float[] c){
+        background_color[0] = c[0];
+        background_color[1] = c[1];
+        background_color[2] = c[2];
+        
+    }
+    
+    void setBackgroundColor(float c0, float c1, float c2){
+        background_color[0] = c0;
+        background_color[1] = c1;
+        background_color[2] = c2;
+        
+    }
+    /************METODOS PRIVADOS**************************************/
 
     private void fixPointsToJava2DCoordinates() {
         Points _my_point = new Points();
@@ -477,7 +550,10 @@ public class MyGL {
                 my_point[1] = ((this.yv_max - this.yv_min) / 2) - my_point[1];
             }
 
-            _my_point.p = my_point;
+           // System.out.println("ponto que será desenhado" + my_point[0] + " " + my_point[1] + " " + my_point[2]);
+            _my_point.p[0] = my_point[0];
+            _my_point.p[1] = my_point[1];
+            _my_point.p[2] = my_point[2];
             points.set(i, _my_point);
 
         }
@@ -603,7 +679,7 @@ public class MyGL {
         boolean point2_ok = false;
         Float delta = 0.00001f;
         int excluidos = 0;
-        
+
         Float u = 0f;
 
         //verifica se os 2 pontos estão fora e os exclui
@@ -611,67 +687,67 @@ public class MyGL {
             _myline = lines.get(i);
             my_point1 = _myline.p1;
             my_point2 = _myline.p2;
-       
+
             test_point1 = my_point1;
             test_point2 = my_point2;
             test_point1[3] = 0f;
             test_point2[3] = 0f;
-            
-            while(u < 1f) {
+
+            while (u < 1f) {
                 //percorre p1 até p2
-                if(!point1_ok) {
-                    
-                     
-                     if(verifyPointIfInsideCube(test_point1)) {
-                         my_point1 = test_point1;
-                         point1_ok = true;
-                     }
-                  
+                if (!point1_ok) {
+
+
+                    if (verifyPointIfInsideCube(test_point1)) {
+                        my_point1 = test_point1;
+                        point1_ok = true;
+                    }
+
                     test_point1[0] = (1 - u) * my_point1[0] + u * my_point2[0];
                     test_point1[1] = (1 - u) * my_point1[1] + u * my_point2[1];
                     test_point1[2] = (1 - u) * my_point1[2] + u * my_point2[2];
-                    
-                   
+
+
                 }
-                
-                if(!point2_ok) {
-                    
-                     if(verifyPointIfInsideCube(test_point2)) {
+
+                if (!point2_ok) {
+
+                    if (verifyPointIfInsideCube(test_point2)) {
                         my_point2 = test_point2;
                         point2_ok = true;
                     }
-                //percorre p2 até p1
+                    //percorre p2 até p1
                     test_point2[0] = (1 - u) * my_point2[0] + u * my_point1[0];
                     test_point2[1] = (1 - u) * my_point2[1] + u * my_point1[1];
                     test_point2[2] = (1 - u) * my_point2[2] + u * my_point1[2];
-            
+
                 }
-                 u += delta;
+                u += delta;
             }
-            
-            if((!point1_ok) && (!point2_ok)) {
+
+            if ((!point1_ok) && (!point2_ok)) {
                 lines.remove(i);
                 nlines--;
                 i--;
-                excluidos ++;
-                  
+                excluidos++;
+
             } else {
-                
+
                 _myline.p1 = my_point1;
                 _myline.p2 = my_point2;
                 lines.set(i, _myline);
                 System.out.println("Pontos da linha recortados: \nPonto1: " + my_point1[0] + " " + my_point1[1] + " " + my_point1[2]);
                 System.out.println("Ponto2: " + my_point2[0] + " " + my_point2[1] + " " + my_point2[2] + "\n\n");
-          
+
             }
-            
+
             u = 0f;
             point1_ok = false;
             point2_ok = false;
-            
 
-           
-    
+
+
+
         }
 
         System.out.println("Total linhas excluidas: " + excluidos + "\n\n");
