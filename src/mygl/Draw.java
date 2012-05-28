@@ -79,11 +79,14 @@ public class Draw extends JPanel {
             // my_point[2] = my_line.p1[2];
 
 
-            //System.out.println("pontos desenhados pela linha " + my_point[0].intValue() + " , " + my_point[1].intValue() + " , " + my_point2[0].intValue() + " , " + my_point2[1].intValue());
+           // System.out.println("pontos desenhados pela linha " + my_point[0].intValue() + " , " + my_point[1].intValue() + " , " + my_point2[0].intValue() + " , " + my_point2[1].intValue());
+           // System.out.println("Valor de i: " +i);
             Color c;
             c = new Color(my_color[0], my_color[1], my_color[2]);
             g2d.setColor(c);
             g2d.drawLine(my_point[0].intValue(), my_point[1].intValue(), my_point2[0].intValue(), my_point2[1].intValue());
+            
+           
 
         }
     }

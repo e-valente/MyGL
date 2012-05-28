@@ -19,24 +19,35 @@ public class Render {
 
         MyGL mygl = new MyGL();
 
-        mygl.setClippingWindow(-400, 400, -400, 400, -400, 400);
-        mygl.setViewPort(0f, 400, 0, 400);
-        mygl.lookAt(0f, 0f, 1f, //coordenada camera
+        mygl.ortho(-400, 400, -400, 400, -400, 400);
+        //mygl.perspective(60f, 1f, 0f, 100f);
+        mygl.setViewPort(0f, 500, 0, 500);
+        mygl.lookAt(0f, 0f, 10f, //coordenada camera
                 0, 0, 0, //ponto p/ onde a camera aponta
                 0, 1, 0); //view up
 
+        //seta a cor de fundo
         mygl.setBackgroundColor(0f, 0f, 1f);
-        //mygl.drawPoint(0f, 0f, 0f);
-        //mygl.drawPoint(400f, 40f, 0f);
-        mygl.drawPointRGB(40f, -40f, 0f, 0f, 1f, 1f);
+        
+        //desenha pontos
+        //mygl.drawPoint(10f, 10f, 10f);
+        mygl.drawPoint(40f, 40f, 0f);
+        
+        //ponto colorido (RGB)
+        mygl.drawPointRGB(200f, -200f, 0f, 0f, 0f, 0f);
         mygl.drawPointRGB(-40f, 40f, 0f, 1f, 0f, 0f);
-        //mygl.drawPoint(-39f, 150f, 400f);
-        //mygl.drawPoint(500f, -410f, 0f);
-        mygl.drawLineRGB(-43f, 0f, 0f, 42f, 0f, 0f, 1f, 0f, 0f);
-        mygl.drawLineRGB(-63f, 100f, 0f, 62f, 10f, 0f, 0f, 1f, 0f);
-        mygl.drawLine(200f, -41f, 0f, 210f, -40f, 0f);
-        //mygl.drawLine(-50f, 0f, 0f, 0f, 50f, 0f);
+  
+        //desenha linha colorida
+        mygl.drawLineRGB(-100f, 300f, 10f, 200f, 20f, 10f, 1f, 0f, 0f);
+      
+        //linha que será recortada (ver saída)
+         mygl.drawLineRGB(-63f, -100f, 0f, 620f, 10f, 0f, 0f, 1f, 0f);
+         mygl.drawLine(200f, -41f, 0f, 210f, -40f, 0f);
+         mygl.drawLine(-50f, 0f, 0f, 0f, 50f, 0f);
+         
         mygl.flush(); //multiplica as matrizes e desenha
+
+       
 
     }
 }

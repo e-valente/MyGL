@@ -66,14 +66,36 @@ public final class Matrices {
 
     }
 
-    public static Float[] multiplyMatrix4X4ByVertex(Float[] mat1, Float[] v) {
+       public static Float[] multiplyMatrix4X4ByVertex(Float[] mat1, Float[] v) {
 
         Float[] v_out = new Float[4];
+        
+        //System.out.print
 
-        v_out[0] = mat1[0] * v[0] + mat1[1] * v[1] + mat1[2] * v[2] + mat1[3] * v[3];
-        v_out[1] = mat1[4] * v[0] + mat1[5] * v[1] + mat1[6] * v[2] + mat1[7] * v[3];
-        v_out[2] = mat1[8] * v[0] + mat1[9] * v[1] + mat1[10] * v[2] + mat1[11] * v[3];
-        v_out[3] = mat1[12] * v[0] + mat1[13] * v[1] + mat1[14] * v[2] + mat1[15] * v[3];
+        v_out[0] = mat1[0] * v[0] + mat1[1] * v[1] + mat1[2] * v[2];
+        v_out[1] = mat1[4] * v[0] + mat1[5] * v[1] + mat1[6] * v[2];
+        v_out[2] = mat1[8] * v[0] + mat1[9] * v[1] + mat1[10] * v[2];
+        v_out[3] = 1f;
+        
+       // System.out.println("vetor multiplicado: " + v_out[0] + v_out[1] + v_out[2] + v_out[3]);
+
+        return (v_out);
+
+
+    }
+    public static Float[] multiplyMatrix4X4ByVertex2(Float[] mat1, Float[] v) {
+
+        Float[] v_out = new Float[4];
+        
+        //System.out.print
+
+        v_out[0] = mat1[0] * v[0] + mat1[1] * v[1] + mat1[2] * v[2];
+        v_out[1] = mat1[4] * v[0] + mat1[5] * v[1] + mat1[6] * v[2];
+        v_out[2] = mat1[8] * v[0] + mat1[9] * v[1] + mat1[10] * v[2];
+        //v_out[3] = mat1[12] * v[0] + mat1[13] * v[1] + mat1[14] * v[2];
+        v_out[3] = 1f;
+        
+       // System.out.println("vetor multiplicado: " + v_out[0] + v_out[1] + v_out[2] + v_out[3]);
 
         return (v_out);
 
